@@ -3,7 +3,7 @@ import { Command } from "commander";
 import fs from "fs/promises";
 import { XMLBuilder } from "fast-xml-parser";
 
-// --- Командні аргументи ---
+//Командні аргументи
 const program = new Command();
 program
   .requiredOption("-i, --input <path>", "шлях до вхідного JSON-файлу")
@@ -13,7 +13,7 @@ program
 program.parse(process.argv);
 const options = program.opts();
 
-// --- Перевірка існування файлу ---
+//Перевірка існування файлу
 try {
   await fs.access(options.input);
 } catch {
@@ -21,7 +21,7 @@ try {
   process.exit(1);
 }
 
-// --- Створення HTTP сервера ---
+//Створення HTTP сервера
 const server = http.createServer(async (req, res) => {
   if (req.url === "/favicon.ico") {
     res.writeHead(204);
@@ -29,18 +29,18 @@ const server = http.createServer(async (req, res) => {
   }
 
   try {
-    // 1️⃣ Читаємо JSON файл
+    //Читаємо JSON файл
     const data = await fs.readFile(options.input, "utf-8");
     const flights = JSON.parse(data);
 
-    // 2️⃣ Отримуємо параметри запиту
+    //Отримуємо параметри запиту
     const url = new URL(req.url, `http://${options.host}:${options.port}`);
     const showDate = url.searchParams.get("date") === "true";
     const airtimeMin = url.searchParams.get("airtime_min")
       ? parseInt(url.searchParams.get("airtime_min"))
       : null;
 
-    // 3️⃣ Фільтрація даних
+    //Фільтрація даних
     let filtered = flights;
     if (airtimeMin) {
       filtered = filtered.filter(
@@ -48,7 +48,7 @@ const server = http.createServer(async (req, res) => {
       );
     }
 
-    // 4️⃣ Формування XML структури
+    //Формування XML структури
     const xmlData = {
       flights: filtered.slice(0, 50).map((f) => {
         const item = {
@@ -60,11 +60,11 @@ const server = http.createServer(async (req, res) => {
       }),
     };
 
-    // 5️⃣ Конвертація JSON → XML
+    // Конвертація JSON → XML
     const builder = new XMLBuilder({ ignoreAttributes: false, format: true });
     const xml = builder.build(xmlData);
 
-    // 6️⃣ Відправлення відповіді клієнту
+    //Відправлення відповіді клієнту
     res.writeHead(200, { "Content-Type": "application/xml; charset=utf-8" });
     res.end(xml);
   } catch (err) {
@@ -73,7 +73,7 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-// --- Запуск сервера ---
+//Запуск сервера
 server.listen(parseInt(options.port), options.host, () => {
   console.log(`Server running at http://${options.host}:${options.port}/`);
 });
