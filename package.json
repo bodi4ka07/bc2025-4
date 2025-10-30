@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.js",
+    "dev": "nodemon main.js --"
   },
   "repository": {
     "type": "git",
@@ -16,5 +18,12 @@
   "bugs": {
     "url": "https://github.com/bodi4ka07/bc2025-4/issues"
   },
-  "homepage": "https://github.com/bodi4ka07/bc2025-4#readme"
+  "homepage": "https://github.com/bodi4ka07/bc2025-4#readme",
+  "dependencies": {
+    "commander": "^14.0.1",
+    "fast-xml-parser": "^5.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
 }
