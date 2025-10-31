@@ -51,10 +51,12 @@ const flights = lines.map(line => {
     // Фільтр за мінімальним часом у повітрі
     if (query.airtime_min) {
       const minAirtime = parseFloat(query.airtime_min);
-      filteredFlights = filteredFlights.filter(flight => 
-        flight.AIR_TIME && flight.AIR_TIME > minAirtime
-      );
+      filteredFlights = filteredFlights.filter(flight => {
+  const air = parseFloat(flight.AIR_TIME);
+  return !isNaN(air) && air > minAirtime;
+});
     }
+      
 
     // Формування результату
     const result = filteredFlights.map(flight => {
